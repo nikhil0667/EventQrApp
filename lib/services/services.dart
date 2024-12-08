@@ -8,8 +8,8 @@ import 'package:eventifyQr/shared_Preference.dart';
 // --------------------------- Get -------------------------------
 var http = CustomHttpClient();
 // Get Schools Data
-//String APIURL = "https://node-api-git-main-nikhil0667s-projects.vercel.app/api";
-String APIURL = "http://localhost:3000/api";
+String APIURL = "https://node-api-git-main-nikhil0667s-projects.vercel.app/api";
+//String APIURL = "http://localhost:3000/api";
 
 getSchools() async {
   var url = Uri.parse('${APIURL}/api/schools');

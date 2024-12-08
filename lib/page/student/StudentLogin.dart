@@ -8,143 +8,155 @@ class StudentLogin extends StatefulWidget {
 }
 
 class _StudentLoginState extends State<StudentLogin> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordHidden = true;
 
-  Future<void> _loginAdmin() async {
-    try {
-      final response = await setStudentLogin({
-        "email": _emailController.text,
-        "password": _passwordController.text
-      });
-      print(response);
-      if (response != null) {
-        final status = response['statusCode'];
-        final msg = response['body']['msg'];
+  Future<void> _loginStudent() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final response = await setStudentLogin({
+          "email": _emailController.text,
+          "password": _passwordController.text,
+        });
+        print(response);
+        if (response != null) {
+          final status = response['statusCode'];
+          final msg = response['body']['msg'];
 
-        if (status == 200) {
-          SnackBarMessage(context, true, msg);
-          Navigator.pushReplacementNamed(context, '/StudentLogin');
-        } else if (status == 500) {
-          SnackBarMessage(context, false, "Internal Server Error");
+          if (status == 200) {
+            SnackBarMessage(context, true, msg);
+            Navigator.pushReplacementNamed(context, '/StudentHome');
+          } else if (status == 500) {
+            SnackBarMessage(context, false, "Internal Server Error");
+          } else {
+            SnackBarMessage(context, false, msg.toString());
+          }
         } else {
-          SnackBarMessage(context, false, msg.toString());
+          SnackBarMessage(context, false, "No response from the server");
         }
-      } else {
-        SnackBarMessage(context, false, "No response from the server");
+      } catch (error) {
+        print(error);
+        SnackBarMessage(context, false, error.toString());
       }
-    } catch (error) {
-      print(error);
-      SnackBarMessage(context, false, error.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(
+        title: Text("Student Login"),
+        backgroundColor: Colors.teal, // Changed color
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Card(
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 28.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                            prefixIcon: Icon(Icons.email),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        TextField(
-                          controller: _passwordController,
-                          obscureText: _isPasswordHidden,
-                          obscuringCharacter: "*",
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            prefixIcon: Icon(Icons.lock),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isPasswordHidden
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _isPasswordHidden = !_isPasswordHidden;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _loginAdmin,
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: Text(
-                              "Login",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ),
-                      ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "Student Login",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal, // Changed color
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "You don't have an account? ",
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email,
+                          color: Colors.teal), // Changed icon color
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/StudentRegister');
-                      },
-                      child: Text(
-                        "Register",
-                        style: TextStyle(fontSize: 16, color: Colors.blue),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your email";
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return "Please enter a valid email address";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _isPasswordHidden,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock,
+                          color: Colors.teal), // Changed icon color
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordHidden
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.teal, // Changed icon color
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordHidden = !_isPasswordHidden;
+                          });
+                        },
                       ),
                     ),
-                  ],
-                ),
-              ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your password";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be at least 6 characters long";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _loginStudent,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.teal, // Changed button color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Login",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "You don't have an account? ",
+                        style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/StudentRegister');
+                        },
+                        child: Text(
+                          "Register",
+                          style: TextStyle(fontSize: 16, color: Colors.teal),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -152,4 +164,3 @@ class _StudentLoginState extends State<StudentLogin> {
     );
   }
 }
-//ayaj

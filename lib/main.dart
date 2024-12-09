@@ -1,5 +1,6 @@
 import 'package:eventifyQr/page/admin/adminDeshbord.dart';
 import 'package:eventifyQr/page/admin/admin_login.dart';
+import 'package:eventifyQr/page/organizer/organizerHome.dart';
 import 'package:eventifyQr/page/organizer/organizerLogin.dart';
 import 'package:eventifyQr/page/splashScreen/Admin_splash_screen.dart';
 import 'package:eventifyQr/page/splashScreen/Organizer_splash_screen%20copy.dart';
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         //'/': (context) => const Admin_Splash_Screen_Page(),
-        '/': (context) => const Student_Splash_Screen_Page(),
+        //'/': (context) => const Student_Splash_Screen_Page(),
         //'/': (context) => const Organizer_Splash_Screen_Page(),
+        //'/': (context) =>  createEvent(),
 // ------------------------------------------------ Student Route ------------------------------------------------
         '/StudentHome': (context) => StudentHome(),
         '/StudentRegister': (context) => StudentRegistration(),

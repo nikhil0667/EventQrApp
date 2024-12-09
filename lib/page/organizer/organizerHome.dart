@@ -13,7 +13,7 @@ class _StudentHomeState extends State<StudentHome> {
         title: Row(
           children: [
             Image.asset(
-              'assets/images/1.PNG', // Path to your logo image
+              'assets/images/1.jpeg', // Path to your logo image
               height: 40,
             ),
             SizedBox(width: 10),
@@ -37,19 +37,11 @@ class _StudentHomeState extends State<StudentHome> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20), // Space at the top
-          Expanded(
-            child: Container(
-              width: double.infinity, // Full width of the screen
-              child: Image.asset(
-                'assets/images/1.png', // Path to your body image
-                fit: BoxFit.cover, // Ensures the image covers the container
-              ),
-            ),
-          ),
-        ],
+      body: Center(
+        child: Text(
+          "Welcome to QR Attendance Management System",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

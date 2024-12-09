@@ -30,9 +30,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         //'/': (context) => const Admin_Splash_Screen_Page(),
-        //'/': (context) => const Student_Splash_Screen_Page(),
+        '/': (context) => const Student_Splash_Screen_Page(),
         //'/': (context) => const Organizer_Splash_Screen_Page(),
-        '/': (context) => const Organizer_Splash_Screen_Page(),
 // ------------------------------------------------ Student Route ------------------------------------------------
         '/StudentHome': (context) => StudentHome(),
         '/StudentRegister': (context) => StudentRegistration(),

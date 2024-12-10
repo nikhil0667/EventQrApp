@@ -12,7 +12,6 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
-  final TextEditingController _divisionController = TextEditingController();
   final TextEditingController _PasswordController = TextEditingController();
   final TextEditingController _rollnoController = TextEditingController();
   bool _obscureText = true;
@@ -28,7 +27,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
     String mobile = _mobileController.text.trim();
     String email = _emailController.text.trim();
     String department = _departmentController.text.trim();
-    String division = _divisionController.text.trim();
+
     String Password = _PasswordController.text.trim();
     String rollno = _rollnoController.text.trim();
 
@@ -37,13 +36,11 @@ class _StudentRegistrationState extends State<StudentRegistration> {
           mobile.isNotEmpty &&
           email.isNotEmpty &&
           department.isNotEmpty &&
-          division.isNotEmpty &&
           Password.isNotEmpty &&
           rollno.isNotEmpty) {
         final response = await setStudentRegister({
           "rollno": rollno,
           "name": name,
-          "div": division,
           "department": department,
           "mobile": mobile,
           "email": email,
@@ -73,40 +70,29 @@ class _StudentRegistrationState extends State<StudentRegistration> {
     }
   }
 
-  void _navigateToLogin() {
-    Navigator.pushNamed(context, '/StudentLogin');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+        title: Text(
+          "Student Register",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.teal, // Changed color
+      ),
       backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Top Header with Arrow and Title
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.blueAccent),
-                      onPressed: _navigateToLogin,
-                    ),
-                    Text(
-                      "Student Register",
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 40),
-
+                SizedBox(height: 15),
                 // Registration Form
                 _buildTextField("Name", Icons.person, _nameController),
                 SizedBox(height: 15),
@@ -118,30 +104,42 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                 _buildTextField(
                     "Department", Icons.apartment, _departmentController),
                 SizedBox(height: 15),
-                _buildTextField("Division", Icons.group, _divisionController),
+                _buildTextField("Roll No", Icons.school, _rollnoController),
                 SizedBox(height: 15),
                 TextField(
                   controller: _PasswordController,
                   obscureText: _obscureText,
                   obscuringCharacter: "*",
+                  autocorrect: true,
+                  maxLength: 6,
                   decoration: InputDecoration(
                     labelText: "Password",
-                    prefixIcon: Icon(Icons.lock),
+                    counterText: "",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Colors.teal,
+                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.teal,
                       ),
                       onPressed: _togglePasswordVisibility,
                     ),
-                    border: OutlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                          color: Colors.teal, width: 2.0), // Focused border
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                          color: Colors.grey, width: 1.0), // Default border
                     ),
                   ),
                 ),
-                SizedBox(height: 15),
-                _buildTextField("Roll No", Icons.school, _rollnoController),
                 SizedBox(height: 30),
-
                 // Submit Button
                 SizedBox(
                   width: double.infinity,
@@ -152,17 +150,16 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.blueAccent,
+                      backgroundColor: Colors.teal,
                     ),
                     child: Text(
                       "Submit",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
 
-                // Link to Login Page
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -170,15 +167,13 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                       "Already have an account? ",
                       style: TextStyle(fontSize: 16),
                     ),
-                    GestureDetector(
-                      onTap: _navigateToLogin,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/StudentLogin');
+                      },
                       child: Text(
                         "Login",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.teal),
                       ),
                     ),
                   ],
@@ -212,11 +207,26 @@ class _StudentRegistrationState extends State<StudentRegistration> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon),
+        labelStyle: TextStyle(color: Colors.grey), // Default label color
+        prefixIcon: Icon(
+          icon,
+          color: Colors.teal,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide:
+              BorderSide(color: Colors.teal, width: 2.0), // Focused border
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide:
+              BorderSide(color: Colors.grey, width: 1.0), // Default border
+        ),
       ),
+      style: TextStyle(color: Colors.black), // Text color
     );
   }
 }

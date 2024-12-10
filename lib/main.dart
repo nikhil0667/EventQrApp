@@ -2,9 +2,9 @@ import 'package:eventifyQr/page/admin/adminDeshbord.dart';
 import 'package:eventifyQr/page/admin/admin_login.dart';
 import 'package:eventifyQr/page/organizer/organizerHome.dart';
 import 'package:eventifyQr/page/organizer/organizerLogin.dart';
+import 'package:eventifyQr/page/organizer/organizerRegistrar.dart';
 import 'package:eventifyQr/page/splashScreen/Admin_splash_screen.dart';
 import 'package:eventifyQr/page/splashScreen/Organizer_splash_screen%20copy.dart';
-import 'package:eventifyQr/page/splashScreen/Student_splash_screen.dart';
 import 'package:eventifyQr/page/student/StudentHome.dart';
 import 'package:eventifyQr/page/student/StudentLogin.dart';
 import 'package:eventifyQr/page/student/StudentRegistration.dart';
@@ -24,15 +24,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Deepvecto',
+      title: 'Event Mangement System',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
       ),
       routes: {
-        //'/': (context) => const Admin_Splash_Screen_Page(),
-        //'/': (context) => const Student_Splash_Screen_Page(),
-        //'/': (context) => const Organizer_Splash_Screen_Page(),
+        '/': (context) => const Admin_Splash_Screen_Page(),
+        // '/': (context) => const Student_Splash_Screen_Page(),
+        // '/': (context) => const Organizer_Splash_Screen_Page(),
         //'/': (context) =>  createEvent(),
 // ------------------------------------------------ Student Route ------------------------------------------------
         '/StudentHome': (context) => StudentHome(),
@@ -43,6 +43,8 @@ class MyApp extends StatelessWidget {
         '/AdminHome': (context) => Admindeshbord(),
 // ------------------------------------------------ Orgainzer Route ------------------------------------------------
         '/Organizerlogin': (context) => const OrganizerLogin(),
+        '/OrganizerHome': (context) => OrganizerHome(),
+        '/OrganizerRegistration': (context) => OrganizerRegistration(),
       },
     );
   }

@@ -31,16 +31,17 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
           mobile.isNotEmpty &&
           email.isNotEmpty &&
           Password.isNotEmpty) {
-        final response = await setStudentRegister({
+        final response = await setOrganizerRegister({
           "name": name,
-          "mobile": mobile,
           "email": email,
+          "mobile": mobile,
           "password": Password,
         });
+        print(response);
         if (response != null) {
           final status = response['body']['status'];
           final msg = response['body']['msg'];
-          if (status == 201) {
+          if (status == 200) {
             SnackBarMessage(context, true, msg);
             Navigator.pushReplacementNamed(context, '/OrganizerHome');
           } else if (status == 500) {
@@ -61,14 +62,21 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
     }
   }
 
-  void _navigateToLogin() {
-    Navigator.pushNamed(context, '/OrganizerLogin');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightGreen[50], // Updated background color
+      appBar: AppBar(
+          leading: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          title: Text(
+            "Organizer Register",
+            style: TextStyle(color: Color(0xffFFFFFF)),
+          ),
+          backgroundColor: Colors.blue // Updated to green
+          ),
+      backgroundColor: Colors.white, // Updated background color
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -77,22 +85,6 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Top Header with Arrow and Title
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.green),
-                      onPressed: _navigateToLogin,
-                    ),
-                    Text(
-                      "Organizer Register",
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 40),
 
                 // Registration Form (Name, Email, Mobile, Password)
@@ -107,7 +99,9 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
                   controller: _PasswordController,
                   obscureText: _obscureText,
                   obscuringCharacter: "*",
+                  maxLength: 6,
                   decoration: InputDecoration(
+                    counterText: "",
                     labelText: "Password",
                     prefixIcon: Icon(Icons.lock),
                     suffixIcon: IconButton(
@@ -130,14 +124,14 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
                     onPressed: _registerAndNavigate,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.blue, // Updated to green
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      backgroundColor: Colors.green, // Updated button color
                     ),
                     child: Text(
                       "Submit",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),
@@ -149,21 +143,20 @@ class _OrganizerRegistrationState extends State<OrganizerRegistration> {
                   children: [
                     Text(
                       "Already have an account? ",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                     ),
-                    GestureDetector(
-                      onTap: _navigateToLogin,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Organizerlogin');
+                      },
                       child: Text(
                         "Login",
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.blue),
                       ),
                     ),
                   ],
                 ),
+
                 SizedBox(height: 30),
 
                 // Footer (Terms and Conditions)

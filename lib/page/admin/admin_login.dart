@@ -1,4 +1,5 @@
 import 'package:eventifyQr/services/services.dart'; // Assuming this exists
+import 'package:eventifyQr/shared_Preference.dart';
 import 'package:eventifyQr/snackBar.dart'; // Assuming this exists
 import 'package:flutter/material.dart';
 
@@ -13,11 +14,6 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true; // Password visibility control
 
-  // Dummy Admin credentials (replace with real authentication logic)
-  final String adminEmail = "admin@example.com";
-  final String adminPassword = "admin123";
-
-  // Function to toggle password visibility
   void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
@@ -31,11 +27,14 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
           "username": _emailController.text,
           "password": _passwordController.text,
         });
+
         if (response != null) {
           final status = response['body']['status'];
           final msg = response['body']['msg'];
 
           if (status == 200) {
+            final adminToken = response["body"]['body']['admin']['token'];
+            SetPreference('admin_token', adminToken);
             SnackBarMessage(context, true, msg);
             Navigator.pushReplacementNamed(context, '/AdminHome');
           } else if (status == 500) {
@@ -56,8 +55,15 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Admin Login"),
-        backgroundColor: Colors.deepOrange,
+        leading: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+        title: Text(
+          "Admin Login",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.deepOrange, // Changed color
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -83,8 +89,20 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: "Username",
+                      labelStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.deepOrange,
+                            width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -97,8 +115,12 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscureText,
+                    obscuringCharacter: "*",
+                    maxLength: 6,
                     decoration: InputDecoration(
                       labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.grey),
+                      counterText: "",
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -109,6 +131,17 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                         ),
                         onPressed:
                             _togglePasswordVisibility, // Toggle visibility
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.deepOrange,
+                            width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
                       ),
                     ),
                     validator: (value) {

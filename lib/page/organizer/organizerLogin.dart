@@ -1,3 +1,6 @@
+import 'package:eventifyQr/services/services.dart';
+import 'package:eventifyQr/shared_Preference.dart';
+import 'package:eventifyQr/snackBar.dart';
 import 'package:flutter/material.dart';
 
 class OrganizerLogin extends StatefulWidget {
@@ -21,41 +24,52 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
   }
 
   // Dummy Organizer credentials (replace with real authentication logic)
-  final String organizerEmail = "organizer@example.com";
-  final String organizerPassword = "organizer123";
-
   Future<void> _loginOrganizer() async {
     if (_formKey.currentState!.validate()) {
-      // Add real login logic here
-      if (_emailController.text == organizerEmail &&
-          _passwordController.text == organizerPassword) {
-        // Login successful
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login successful')),
-        );
-        Navigator.pushReplacementNamed(context, '/OrganizerHome');
-      } else {
-        // Invalid login
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid username or password')),
-        );
+      try {
+        final response = await setOrganizerLogin({
+          "email": _emailController.text.toString(),
+          "password": _passwordController.text.toString(),
+        });
+        print(response);
+        if (response != null) {
+          final status = response['body']['status'];
+          final msg = response['body']['msg'];
+
+          if (status == 200) {
+            SetPreference('organizer_token',
+                response['body']['body']['organizer']['token']);
+            SnackBarMessage(context, true, msg);
+            Navigator.pushReplacementNamed(context, '/AdminHome');
+          } else if (status == 500) {
+            SnackBarMessage(context, false, "Internal Server Error");
+          } else {
+            SnackBarMessage(context, false, msg.toString());
+          }
+        } else {
+          SnackBarMessage(context, false, "No response from the server");
+        }
+      } catch (error) {
+        SnackBarMessage(context, false, error.toString());
       }
     }
-  }
-
-  // Navigate to Registration page
-  void _navigateToRegistration() {
-    Navigator.pushNamed(context, '/OrganizerRegistration');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Organizer Login"),
-        backgroundColor:
-            const Color.fromARGB(255, 30, 40, 190), // Updated to green
-      ),
+          leading: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          title: Text(
+            "Organizer Login",
+            style: TextStyle(color: Color(0xffFFFFFF)),
+          ),
+          backgroundColor: Colors.blue // Updated to green
+          ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Center(
@@ -68,11 +82,10 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                   Text(
                     "Organizer Login", // Changed title text
                     style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(
-                          255, 30, 40, 190), // Updated to green
-                    ),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue // Updated to green
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
@@ -83,6 +96,16 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                       labelText: "Username",
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(
+                            color: Colors.blue, width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -95,7 +118,9 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscureText,
+                    maxLength: 6,
                     decoration: InputDecoration(
+                      counterText: "",
                       labelText: "Password",
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.lock),
@@ -107,6 +132,16 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                         ),
                         onPressed:
                             _togglePasswordVisibility, // Toggle visibility
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(
+                            color: Colors.blue, width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
                       ),
                     ),
                     validator: (value) {
@@ -124,8 +159,7 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                     onPressed: _loginOrganizer,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: const Color.fromARGB(
-                          255, 30, 40, 190), // Updated to green
+                      backgroundColor: Colors.blue, // Updated to green
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -136,20 +170,24 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Center(
-                    child: GestureDetector(
-                      onTap:
-                          _navigateToRegistration, // Navigate to registration
-                      child: Text(
-                        "Don't have an account?",
-                        style: TextStyle(
-                          color: const Color.fromARGB(
-                              255, 30, 40, 190), // Updated to green
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "You don't have an account? ",
+                        style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, '/OrganizerRegistration');
+                        },
+                        child: Text(
+                          "Register",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),

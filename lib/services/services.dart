@@ -9,14 +9,7 @@ import 'package:eventifyQr/shared_Preference.dart';
 var http = CustomHttpClient();
 // Get Schools Data
 String APIURL = "https://node-api-git-main-nikhil0667s-projects.vercel.app/api";
-//String APIURL = "http://localhost:3000/api";
-
-getSchools() async {
-  var url = Uri.parse('${APIURL}/api/schools');
-  var response = await http.get(url);
-
-  return json.decode(response.body);
-}
+// String APIURL = "http://localhost:3000/api";
 
 // ------------------------------ Post -------------------------
 // ------------------------------ Admin Login ------------------------------
@@ -32,8 +25,9 @@ setAdminLogin(data) async {
 
 setStudentLogin(data) async {
   var url = Uri.parse('${APIURL}/student/login');
-  var response = await http.post(url,
-      body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
+  var response = await http.post(url, body: jsonEncode(data), headers: {
+    'Content-Type': 'application/json',
+  });
   final responseBody = jsonDecode(response.body);
   final statusCode = response.statusCode;
 
@@ -41,8 +35,8 @@ setStudentLogin(data) async {
 }
 
 setStudentRegister(data) async {
-  print(data);
   var url = Uri.parse('${APIURL}/student');
+
   var response = await http.post(url,
       body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
   final responseBody = jsonDecode(response.body);
@@ -51,18 +45,96 @@ setStudentRegister(data) async {
   return {'body': responseBody, 'statusCode': statusCode};
 }
 
-// Studnet Login
-getStudentLogin(data) async {
-  var url = Uri.parse('${APIURL}/student/login');
-  print(url);
+//Organizer Register
+setOrganizerRegister(data) async {
   print(data);
+  var url = Uri.parse('${APIURL}/organizer');
+
   var response = await http.post(url,
       body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
   final responseBody = jsonDecode(response.body);
   final statusCode = response.statusCode;
-  var token = await GetPreference('token').then((r) => r);
 
-  //print("TOKEN :- $token ");
+  return {'body': responseBody, 'statusCode': statusCode};
+}
+
+//Organizer Lohin
+setOrganizerLogin(data) async {
+  var url = Uri.parse('${APIURL}/organizer/login');
+  var response = await http.post(url, body: jsonEncode(data), headers: {
+    'Content-Type': 'application/json',
+  });
+  final responseBody = jsonDecode(response.body);
+  final statusCode = response.statusCode;
+  print(response);
+
+  return {'body': responseBody, 'statusCode': statusCode};
+}
+
+Future<Map<String, dynamic>> setcreateEvent(Map<String, dynamic> data) async {
+  var url = Uri.parse('${APIURL}/events/create'); // Your API URL here
+  String token = "";
+
+  // Fetch the token from shared preferences
+  token = await GetPreference('admin_token') ??
+      await GetPreference('organizer_token') ??
+      "";
+
+  if (token.isEmpty) {
+    print("Token is missing");
+    throw Exception("Token is required for authentication");
+  }
+
+  print("Token: $token");
+
+  try {
+    // Send the data as a POST request
+    var response = await http.post(
+      url,
+      body: jsonEncode(data),
+      headers: {
+        'token': token,
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final responseBody = jsonDecode(response.body);
+    final statusCode = response.statusCode;
+
+    // Check if response is successful
+    if (statusCode == 201) {
+      print("Response: $responseBody");
+      return {'body': responseBody, 'statusCode': statusCode};
+    } else {
+      print("Failed with status code: $statusCode");
+      return {'body': responseBody, 'statusCode': statusCode};
+    }
+  } catch (e) {
+    print("Error making API call: $e");
+    rethrow; // Rethrow error for further handling
+  }
+}
+
+// GetEvent
+getEventData() async {
+  var url = Uri.parse('${APIURL}/events');
+  String token = "";
+  token = await GetPreference('admin_token') ??
+      await GetPreference('organizer_token') ??
+      "";
+
+  if (token.isEmpty) {
+    print("Token is missing");
+    throw Exception("Token is required for authentication");
+  }
+
+  var response = await http.get(url, headers: {
+    'token': token,
+    'Content-Type': 'application/json',
+  });
+  final responseBody = jsonDecode(response.body);
+  final statusCode = response.statusCode;
+
   return {'body': responseBody, 'statusCode': statusCode};
 }
 

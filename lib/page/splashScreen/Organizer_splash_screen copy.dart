@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:eventifyQr/page/admin/admin_login.dart';
 import 'package:eventifyQr/shared_Preference.dart';
 import 'package:flutter/foundation.dart';
@@ -15,27 +16,59 @@ class Organizer_Splash_Screen_Page extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<Organizer_Splash_Screen_Page> {
-  @override
-  void initState() {
-    super.initState();
+  checkToken() async {
+    var str = await GetPreference("organizer_token");
+
     Timer(
-      const Duration(milliseconds: 120),
+      const Duration(seconds: 3),
       () {
+        // Determine the target widget using ternary operators
+        String targetWidget =
+            str == null ? '/Organizerlogin' : '/OrganizerHome';
+
         // Navigate to the target widget
-        Navigator.pushNamed(
+        Navigator.pushReplacementNamed(
           context,
-          "/Organizerlogin",
+          targetWidget,
         );
       },
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+    checkToken();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.green,
-        body: Text("Organizer"),
+        backgroundColor: Colors.blue, // You can change the background color
+        body: Center(
+          child: AnimatedTextKit(
+            animatedTexts: [
+              TypewriterAnimatedText(
+                'Event Management System',
+                textStyle: TextStyle(
+                  fontSize: 32.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                speed: Duration(milliseconds: 200),
+              ),
+              FadeAnimatedText(
+                'Welcome to Organizer!',
+                textStyle: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+            repeatForever: true, // Set to true for continuous animation
+          ),
+        ),
       ),
     );
   }

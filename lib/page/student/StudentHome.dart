@@ -2,7 +2,12 @@
 
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class StudentHome extends StatefulWidget {
+  @override
+  State<StudentHome> createState() => _StudentHomeState();
+}
+
+class _StudentHomeState extends State<StudentHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -260,5 +265,5 @@ class EventDetailsPage extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(home: HomePage()));
+  runApp(MaterialApp(home: StudentHome()));
 }

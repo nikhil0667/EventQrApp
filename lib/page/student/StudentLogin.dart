@@ -1,4 +1,5 @@
 import 'package:eventifyQr/services/services.dart';
+import 'package:eventifyQr/shared_Preference.dart';
 import 'package:eventifyQr/snackBar.dart';
 import 'package:flutter/material.dart';
 
@@ -20,12 +21,13 @@ class _StudentLoginState extends State<StudentLogin> {
           "email": _emailController.text,
           "password": _passwordController.text,
         });
-        print(response);
+
         if (response != null) {
           final status = response['statusCode'];
           final msg = response['body']['msg'];
 
           if (status == 200) {
+            SetPreference('student_token', response['body']['token']);
             SnackBarMessage(context, true, msg);
             Navigator.pushReplacementNamed(context, '/StudentHome');
           } else if (status == 500) {
@@ -47,9 +49,17 @@ class _StudentLoginState extends State<StudentLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student Login"),
+        leading: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+        title: Text(
+          "Student Login",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.teal, // Changed color
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Center(
@@ -74,7 +84,20 @@ class _StudentLoginState extends State<StudentLogin> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: "Email",
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.teal, width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
+                      ),
                       prefixIcon: Icon(Icons.email,
                           color: Colors.teal), // Changed icon color
                     ),
@@ -92,9 +115,24 @@ class _StudentLoginState extends State<StudentLogin> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _isPasswordHidden,
+                    maxLength: 6,
                     decoration: InputDecoration(
+                      counterText: "",
                       labelText: "Password",
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.teal, width: 2.0), // Focused border
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                            color: Colors.grey, width: 1.0), // Default border
+                      ),
                       prefixIcon: Icon(Icons.lock,
                           color: Colors.teal), // Changed icon color
                       suffixIcon: IconButton(
@@ -161,6 +199,35 @@ class _StudentLoginState extends State<StudentLogin> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+      String label, IconData icon, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.grey), // Default label color
+        prefixIcon: Icon(
+          icon,
+          color: Colors.teal,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide:
+              BorderSide(color: Colors.teal, width: 2.0), // Focused border
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide:
+              BorderSide(color: Colors.grey, width: 1.0), // Default border
+        ),
+      ),
+      style: TextStyle(color: Colors.black), // Text color
     );
   }
 }

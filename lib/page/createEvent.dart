@@ -1,13 +1,96 @@
+import 'package:eventifyQr/services/services.dart';
+import 'package:eventifyQr/shared_Preference.dart';
+import 'package:eventifyQr/snackBar.dart';
 import 'package:flutter/material.dart';
 
-class CreateEventPage extends StatelessWidget {
+class CreateEventPage extends StatefulWidget {
+  @override
+  State<CreateEventPage> createState() => _CreateEventPageState();
+}
+
+class _CreateEventPageState extends State<CreateEventPage> {
   final TextEditingController eventNameController = TextEditingController();
+
   final TextEditingController organizerController = TextEditingController();
+
   final TextEditingController eventDateController = TextEditingController();
+
   final TextEditingController startRegController = TextEditingController();
+
   final TextEditingController endRegController = TextEditingController();
+
   final TextEditingController locationController = TextEditingController();
+
   final TextEditingController descriptionController = TextEditingController();
+
+  final TextEditingController eventPosterController = TextEditingController();
+  Future<void> createEvent() async {
+    // Check if any required field is empty or null
+    if (eventNameController.text.isEmpty ||
+        eventPosterController.text.isEmpty ||
+        organizerController.text.isEmpty ||
+        eventDateController.text.isEmpty ||
+        startRegController.text.isEmpty ||
+        endRegController.text.isEmpty ||
+        locationController.text.isEmpty ||
+        descriptionController.text.isEmpty) {
+      SnackBarMessage(context, false, "All fields are required.");
+      return;
+    }
+
+    try {
+      // Convert date fields to ISO 8601 format (if necessary)
+      String eventDate =
+          DateTime.parse(eventDateController.text).toIso8601String();
+      String startRegistration =
+          DateTime.parse(startRegController.text).toIso8601String();
+      String endRegistration =
+          DateTime.parse(endRegController.text).toIso8601String();
+
+      // Log data before sending to API
+      print({
+        "eventName": eventNameController.text ?? "",
+        "event_poster": eventPosterController.text ?? "",
+        "eventOrganizer": organizerController.text ?? "",
+        "eventDate": eventDate,
+        "startRegistration": startRegistration,
+        "endRegistration": endRegistration,
+        "location": locationController.text ?? "",
+        "description": descriptionController.text ?? "",
+      });
+
+      // Send data to API
+      final response = await setcreateEvent({
+        "eventName": eventNameController.text ?? "",
+        "event_poster": eventPosterController.text ?? "",
+        "eventOrganizer": organizerController.text ?? "",
+        "eventDate": eventDate,
+        "startRegistration": startRegistration,
+        "endRegistration": endRegistration,
+        "location": locationController.text ?? "",
+        "description": descriptionController.text ?? "",
+      });
+
+      if (response != null) {
+        final status = response['body']['status'];
+        final msg = response['body']['msg'];
+        print(response);
+
+        if (status == 200) {
+          SnackBarMessage(context, true, msg);
+        } else if (status == 500) {
+          SnackBarMessage(context, false, "Internal Server Error");
+        } else {
+          SnackBarMessage(context, false, msg.toString());
+        }
+      } else {
+        SnackBarMessage(context, false, "No response from the server");
+      }
+    } catch (error) {
+      print(error); // Log the error for debugging
+      SnackBarMessage(context, false, error.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +122,16 @@ class CreateEventPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
+            TextField(
+              controller: eventPosterController,
+              decoration: const InputDecoration(
+                labelText: "Event Poster",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15),
+            // Event Organizer
+
             // Event Date
             TextField(
               controller: eventDateController,
@@ -132,20 +225,7 @@ class CreateEventPage extends StatelessWidget {
                 minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () {
-                final eventDetails = {
-                  "name": eventNameController.text,
-                  "organizer": organizerController.text,
-                  "date": eventDateController.text,
-                  "startRegistration": startRegController.text,
-                  "endRegistration": endRegController.text,
-                  "location": locationController.text,
-                  "description": descriptionController.text,
-                };
-                print("Event Details: $eventDetails");
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text("Event Registered Successfully!")),
-                );
+                createEvent();
               },
               child: const Text("Submit"),
             ),

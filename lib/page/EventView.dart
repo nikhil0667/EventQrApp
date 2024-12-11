@@ -1,3 +1,4 @@
+import 'package:eventifyQr/page/createEvent.dart';
 import 'package:eventifyQr/services/services.dart';
 import 'package:eventifyQr/snackBar.dart';
 import 'package:flutter/material.dart';
@@ -57,10 +58,12 @@ class _EventListScreenState extends State<EventListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
-        ),
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
         title: Text(
           "View Event",
           style: TextStyle(color: Colors.white),
@@ -73,29 +76,41 @@ class _EventListScreenState extends State<EventListScreen> {
               itemCount: count,
               itemBuilder: (context, index) {
                 final event = eventDetails['events'][index];
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    leading: Image.network(
-                      event['event_poster'] ?? "",
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      event["eventName"] ?? "",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Organizer: ${event['eventOrganizer'] ?? ""}"),
-                        Text("Date: ${event['eventDate'] ?? ""}"),
-                        Text("Location: ${event['location'] ?? ""}"),
-                        Text("Description: ${event['description'] ?? ""}"),
-                      ],
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateEventPage(
+                                type: "update",
+                                event: event,
+                              )),
+                    );
+                  },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(10),
+                      leading: Image.network(
+                        event['event_poster'] ?? "",
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fill,
+                      ),
+                      title: Text(
+                        event["eventName"] ?? "",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Organizer: ${event['eventOrganizer'] ?? ""}"),
+                          Text("Date: ${event['eventDate'] ?? ""}"),
+                          Text("Location: ${event['location'] ?? ""}"),
+                          Text("Description: ${event['description'] ?? ""}"),
+                        ],
+                      ),
                     ),
                   ),
                 );

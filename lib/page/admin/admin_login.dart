@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eventifyQr/services/services.dart'; // Assuming this exists
 import 'package:eventifyQr/shared_Preference.dart';
 import 'package:eventifyQr/snackBar.dart'; // Assuming this exists
@@ -13,7 +15,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true; // Password visibility control
-
+  bool isLoad = false;
   void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
@@ -21,6 +23,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
   }
 
   Future<void> _loginAdmin() async {
+    setState(() {
+      isLoad = true;
+    });
     if (_formKey.currentState!.validate()) {
       try {
         final response = await setAdminLogin({
@@ -45,6 +50,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         } else {
           SnackBarMessage(context, false, "No response from the server");
         }
+        setState(() {
+          isLoad = false;
+        });
       } catch (error) {
         SnackBarMessage(context, false, error.toString());
       }
@@ -156,7 +164,11 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                   ),
                   SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: _loginAdmin,
+                    onPressed: !isLoad
+                        ? _loginAdmin
+                        : () {
+                            print("Wait");
+                          },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
                       backgroundColor: Colors.deepOrange,
@@ -165,7 +177,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                       ),
                     ),
                     child: Text(
-                      "Login",
+                      !isLoad ? "Login" : "Please Wait",
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),

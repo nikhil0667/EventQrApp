@@ -13,8 +13,11 @@ class _StudentLoginState extends State<StudentLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordHidden = true;
-
+  bool isload = false;
   Future<void> _loginStudent() async {
+    setState(() {
+      isload = true;
+    });
     if (_formKey.currentState!.validate()) {
       try {
         final response = await setStudentLogin({
@@ -30,6 +33,9 @@ class _StudentLoginState extends State<StudentLogin> {
             SetPreference('student_token', response['body']['token']);
             SnackBarMessage(context, true, msg);
             Navigator.pushReplacementNamed(context, '/StudentHome');
+            setState(() {
+              isload = false;
+            });
           } else if (status == 500) {
             SnackBarMessage(context, false, "Internal Server Error");
           } else {
@@ -161,7 +167,11 @@ class _StudentLoginState extends State<StudentLogin> {
                   ),
                   SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: _loginStudent,
+                    onPressed: !isload
+                        ? _loginStudent
+                        : () {
+                            print("PLEASE WAIT");
+                          },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
                       backgroundColor: Colors.teal, // Changed button color
@@ -170,7 +180,7 @@ class _StudentLoginState extends State<StudentLogin> {
                       ),
                     ),
                     child: Text(
-                      "Login",
+                      !isload ? "Login" : "Please Wait",
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),

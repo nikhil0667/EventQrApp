@@ -5,6 +5,7 @@ import 'package:eventifyQr/page/organizer/organizerLogin.dart';
 import 'package:eventifyQr/page/organizer/organizerRegistrar.dart';
 import 'package:eventifyQr/page/splashScreen/Admin_splash_screen.dart';
 import 'package:eventifyQr/page/splashScreen/Organizer_splash_screen%20copy.dart';
+import 'package:eventifyQr/page/splashScreen/Student_splash_screen.dart';
 import 'package:eventifyQr/page/student/StudentHome.dart';
 import 'package:eventifyQr/page/student/StudentLogin.dart';
 import 'package:eventifyQr/page/student/StudentRegistration.dart';
@@ -33,67 +34,20 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Admin_Splash_Screen_Page(),
         // '/': (context) => const Student_Splash_Screen_Page(),
         // '/': (context) => const Organizer_Splash_Screen_Page(),
-        //'/': (context) =>  createEvent(),
+        // '/': (context) =>  createEvent(),
 // ------------------------------------------------ Student Route ------------------------------------------------
         '/StudentHome': (context) => StudentHome(),
         '/StudentRegister': (context) => StudentRegistration(),
         '/StudentLogin': (context) => StudentLogin(),
 // ------------------------------------------------ Admin Route ------------------------------------------------
         '/AdminLogin': (context) => AdminLoginPage(),
-        '/AdminHome': (context) => Admindeshbord(),
+
+        '/AdminHome': (context) => const Admindeshbord(),
 // ------------------------------------------------ Orgainzer Route ------------------------------------------------
         '/Organizerlogin': (context) => const OrganizerLogin(),
         '/OrganizerHome': (context) => OrganizerHome(),
         '/OrganizerRegistration': (context) => OrganizerRegistration(),
       },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

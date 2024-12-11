@@ -15,7 +15,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   final TextEditingController _PasswordController = TextEditingController();
   final TextEditingController _rollnoController = TextEditingController();
   bool _obscureText = true;
-
+  bool isloading = false;
   void _togglePasswordVisibility() {
     setState(() {
       _obscureText = !_obscureText;
@@ -23,6 +23,9 @@ class _StudentRegistrationState extends State<StudentRegistration> {
   }
 
   void _registerAndNavigate() async {
+    setState(() {
+      isloading = true;
+    });
     String name = _nameController.text.trim();
     String mobile = _mobileController.text.trim();
     String email = _emailController.text.trim();
@@ -52,6 +55,9 @@ class _StudentRegistrationState extends State<StudentRegistration> {
           if (status == 201) {
             SnackBarMessage(context, true, msg);
             Navigator.pushReplacementNamed(context, '/StudentHome');
+            setState(() {
+              isloading = false;
+            });
           } else if (status == 500) {
             SnackBarMessage(context, false, "Internal Server Error");
           } else {
@@ -144,7 +150,11 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _registerAndNavigate,
+                    onPressed: !isloading
+                        ? _registerAndNavigate
+                        : () {
+                            print("object");
+                          },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
@@ -153,7 +163,7 @@ class _StudentRegistrationState extends State<StudentRegistration> {
                       backgroundColor: Colors.teal,
                     ),
                     child: Text(
-                      "Submit",
+                      !isloading ? "Submit" : "Please Wait",
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),

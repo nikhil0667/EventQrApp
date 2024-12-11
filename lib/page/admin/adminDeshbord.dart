@@ -15,7 +15,11 @@ class _AdmindeshbordState extends State<Admindeshbord> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Event"),
+        title: Text(
+          "Home",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.deepOrange, // Changed color
       ),
       drawer: Drawer(
         child: ListView(
@@ -24,7 +28,7 @@ class _AdmindeshbordState extends State<Admindeshbord> {
             DrawerHeader(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.deepOrange,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,25 +59,26 @@ class _AdmindeshbordState extends State<Admindeshbord> {
             ),
             // Drawer Items
             ListTile(
-              leading: Icon(Icons.home, color: Colors.blue),
+              leading: Icon(Icons.home, color: Colors.deepOrange),
               title: Text("Home"),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
               },
             ),
             ListTile(
-              leading: Icon(Icons.event, color: Colors.blue),
+              leading: Icon(Icons.event, color: Colors.deepOrange),
               title: Text("Create Event"),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateEventPage()),
+                  MaterialPageRoute(
+                      builder: (context) => CreateEventPage(type: "create")),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.event, color: Colors.blue),
+              leading: Icon(Icons.event, color: Colors.deepOrange),
               title: Text("View Event"),
               onTap: () {
                 Navigator.pop(context);
@@ -90,6 +95,10 @@ class _AdmindeshbordState extends State<Admindeshbord> {
               onTap: () {
                 Navigator.pop(context);
                 ClearPreference('admin_token');
+                Navigator.pushNamed(
+                  context,
+                  "/AdminLogin",
+                );
               },
             ),
           ],

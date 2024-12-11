@@ -40,7 +40,7 @@ class _OrganizerLoginState extends State<OrganizerLogin> {
             SetPreference('organizer_token',
                 response['body']['body']['organizer']['token']);
             SnackBarMessage(context, true, msg);
-            Navigator.pushReplacementNamed(context, '/AdminHome');
+            Navigator.pushReplacementNamed(context, '/OrganizerHome');
           } else if (status == 500) {
             SnackBarMessage(context, false, "Internal Server Error");
           } else {

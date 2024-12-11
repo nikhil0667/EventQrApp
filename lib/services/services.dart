@@ -121,6 +121,7 @@ getEventData() async {
   String token = "";
   token = await GetPreference('admin_token') ??
       await GetPreference('organizer_token') ??
+      await GetPreference('student_token') ??
       "";
 
   if (token.isEmpty) {
@@ -129,6 +130,31 @@ getEventData() async {
   }
 
   var response = await http.get(url, headers: {
+    'token': token,
+    'Content-Type': 'application/json',
+  });
+  final responseBody = jsonDecode(response.body);
+  final statusCode = response.statusCode;
+
+  return {'body': responseBody, 'statusCode': statusCode};
+}
+
+getEventUpdate(data, id) async {
+  var url = Uri.parse('${APIURL}/events/${id}');
+  print(url);
+  // print(data);
+  String token = "";
+  token = await GetPreference('admin_token') ??
+      await GetPreference('organizer_token') ??
+      await GetPreference('student_token') ??
+      "";
+
+  if (token.isEmpty) {
+    print("Token is missing");
+    throw Exception("Token is required for authentication");
+  }
+
+  var response = await http.put(url, headers: {
     'token': token,
     'Content-Type': 'application/json',
   });

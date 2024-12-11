@@ -1,3 +1,4 @@
+import 'package:eventifyQr/page/EventView.dart';
 import 'package:eventifyQr/page/createEvent.dart';
 import 'package:eventifyQr/shared_Preference.dart';
 import 'package:flutter/material.dart';
@@ -62,19 +63,36 @@ class _OrganizerHomeState extends State<OrganizerHome> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateEventPage()),
+                  MaterialPageRoute(
+                      builder: (context) => CreateEventPage(
+                            type: "create",
+                          )),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.event, color: Colors.blue),
+              title: Text("View Event"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventListScreen()),
                 );
               },
             ),
 
             Divider(),
             ListTile(
-              leading: Icon(Icons.logout, color: Colors.red),
+              leading: Icon(Icons.logout, color: Colors.blue),
               title: Text("Logout"),
               onTap: () {
                 Navigator.pop(context);
                 ClearPreference('organizer_token');
-                print(GetPreference('organizer_token'));
+                Navigator.pushNamed(
+                  context,
+                  "/Organizerlogin",
+                );
               },
             ),
           ],

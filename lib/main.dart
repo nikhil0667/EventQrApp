@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        // '/': (context) => const Admin_Splash_Screen_Page(),
-        '/': (context) => const Student_Splash_Screen_Page(),
+        '/': (context) => const Admin_Splash_Screen_Page(),
+        // '/': (context) => const Student_Splash_Screen_Page(),
         // '/': (context) => const Organizer_Splash_Screen_Page(),
         // '/': (context) => EventCard(),
 // ------------------------------------------------ Student Route ------------------------------------------------

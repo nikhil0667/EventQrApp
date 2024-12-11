@@ -4,6 +4,11 @@ import 'package:eventifyQr/snackBar.dart';
 import 'package:flutter/material.dart';
 
 class EventListScreen extends StatefulWidget {
+  bool isView = false;
+
+  EventListScreen({
+    this.isView = false,
+  });
   @override
   State<EventListScreen> createState() => _EventListScreenState();
 }
@@ -117,14 +122,16 @@ class _EventListScreenState extends State<EventListScreen> {
                     final event = eventDetails['events'][index];
                     return InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateEventPage(
-                                    type: "update",
-                                    event: event,
-                                  )),
-                        );
+                        widget.isView
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateEventPage(
+                                          type: "update",
+                                          event: event,
+                                        )),
+                              )
+                            : () {};
                       },
                       child: Card(
                         margin:
@@ -144,11 +151,13 @@ class _EventListScreenState extends State<EventListScreen> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    deleteEventData(event['event_id']);
-                                  },
-                                  icon: Icon(Icons.delete))
+                              widget.isView
+                                  ? IconButton(
+                                      onPressed: () {
+                                        deleteEventData(event['event_id']);
+                                      },
+                                      icon: Icon(Icons.delete))
+                                  : SizedBox()
                             ],
                           ),
                           subtitle: Column(

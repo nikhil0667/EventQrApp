@@ -394,7 +394,10 @@ class EventDetailsPage extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EventListScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => EventListScreen(
+                            isView: true,
+                          )),
                 );
               },
             ),

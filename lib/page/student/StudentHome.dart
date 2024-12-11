@@ -379,7 +379,12 @@ class EventDetailsPage extends StatelessWidget {
               leading: Icon(Icons.home, color: Colors.blue),
               title: Text("Home"),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StudentHome(),
+                  ),
+                ); // Close the drawer
               },
             ),
             ListTile(

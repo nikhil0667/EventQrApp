@@ -33,19 +33,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   void initState() {
     super.initState();
     // Access arguments passed to the StatefulWidget
-    isCreate = widget.type == "create";
-
-    if (!isCreate && widget.event != null) {
-      // Populate fields for editing an event
-      eventNameController.text = widget.event['eventName'] ?? "";
-      eventPosterController.text = widget.event['event_poster'] ?? "";
-      organizerController.text = widget.event['eventOrganizer'] ?? "";
-      eventDateController.text = widget.event['eventDate'] ?? "";
-      startRegController.text = widget.event['startRegistration'] ?? "";
-      endRegController.text = widget.event['endRegistration'] ?? "";
-      locationController.text = widget.event['location'] ?? "";
-      descriptionController.text = widget.event['description'] ?? "";
-    }
   }
 
   Future<void> createEvent() async {

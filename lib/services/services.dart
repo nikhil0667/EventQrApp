@@ -140,9 +140,9 @@ getEventData() async {
 }
 
 getEventUpdate(data, id) async {
-  var url = Uri.parse('${APIURL}/events/${id}');
+  var url = Uri.parse('${APIURL}/events/$id');
   print(url);
-  // print(data);
+  print(data);
   String token = "";
   token = await GetPreference('admin_token') ??
       await GetPreference('organizer_token') ??
@@ -155,6 +155,31 @@ getEventUpdate(data, id) async {
   }
 
   var response = await http.put(url, headers: {
+    'Content-Type': 'application/json',
+  });
+  final responseBody = jsonDecode(response.body);
+  final statusCode = response.statusCode;
+
+  return {'body': responseBody, 'statusCode': statusCode};
+}
+
+deleteEvent(id) async {
+  //print("$data");
+  var url = Uri.parse('${APIURL}/events/$id');
+  print(url);
+
+  String token = "";
+  token = await GetPreference('admin_token') ??
+      await GetPreference('organizer_token') ??
+      await GetPreference('student_token') ??
+      "";
+
+  if (token.isEmpty) {
+    print("Token is missing");
+    throw Exception("Token is required for authentication");
+  }
+
+  var response = await http.delete(url, headers: {
     'token': token,
     'Content-Type': 'application/json',
   });
@@ -183,19 +208,8 @@ setUpdateReview(data) async {
 
   // return {'body': responseBody, 'statusCode': statusCode};
 }
+
 // ------------------------ Delete -------------------------------
-
-deleteCart(data) async {
-  //print("$data");
-  var url = Uri.parse('${APIURL}student/cart/$data');
-  var response =
-      await http.delete(url, headers: {'Content-Type': 'application/json'});
-  final responseBody = jsonDecode(response.body);
-  final statusCode = response.statusCode;
-  var token = await GetPreference('token').then((r) => r);
-
-  return {'body': responseBody, 'statusCode': statusCode};
-}
 
 // Google Sign in
 getGoogleSignIn(data) async {
